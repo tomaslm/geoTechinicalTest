@@ -3,45 +3,48 @@ from chalenge import question_A
 
 
 class TestLines(unittest.TestCase):
-    def test_paralel_lines_1(self):
-        l1 = ((0, 1), (1, 2))
-        l2 = ((0, 1), (1, 2))
-        self.assertFalse(question_A.check_line_overlap(l1, l2))
-        self.assertFalse(question_A.check_line_overlap(l2, l1))
+    def test_overlapping_lines_1(self):
+        line_1 = (1, 5)
+        line_2 = (2, 6)
+        return self.assertTrue(question_A.check_line_overlap(line_1, line_2))
 
-    def test_paralel_lines_2(self):
-        l1 = ((0, 0), (5, 5))
-        l2 = ((10, 10), (20, 20))
-        self.assertFalse(question_A.check_line_overlap(l1, l2))
-        self.assertFalse(question_A.check_line_overlap(l2, l1))
+    def test_overlapping_lines_2(self):
+        line_1 = (0, 100)
+        line_2 = (50, 51)
+        return self.assertTrue(question_A.check_line_overlap(line_1, line_2))
 
-    def test_paralel_lines_3(self):
-        l1 = ((4, 8), (2, 4))
-        l2 = ((30, 60), (15, 30))
-        self.assertFalse(question_A.check_line_overlap(l1, l2))
-        self.assertFalse(question_A.check_line_overlap(l2, l1))
+    def test_overlapping_lines_3(self):
+        line_1 = (50, 51)
+        line_2 = (0, 100)
+        return self.assertTrue(question_A.check_line_overlap(line_1, line_2))
 
-    def test_paralel_lines_4(self):
-        l1 = ((4, 8), (2, 16))
-        l2 = ((30, 60), (15, 120))
-        self.assertFalse(question_A.check_line_overlap(l1, l2))
-        self.assertFalse(question_A.check_line_overlap(l2, l1))
+    def test_overlapping_lines_3(self):
+        line_1 = (0, 100)
+        line_2 = (100, 101)
+        return self.assertTrue(question_A.check_line_overlap(line_1, line_2))
 
-    def test_paralel_lines_4(self):
-        l1 = ((1.5, 4.5), (1.5, 1.5))
-        l2 = ((12, 12), (12, 4))
-        self.assertFalse(question_A.check_line_overlap(l1, l2))
-        self.assertFalse(question_A.check_line_overlap(l2, l1))
+    def test_overlapping_lines_4(self):
+        line_1 = (0, 100)
+        line_2 = (-10, 0)
+        return self.assertTrue(question_A.check_line_overlap(line_1, line_2))
 
-    def test_transversal_lines_1(self):
-        l1 = ((0, 0), (0, 1))
-        l2 = ((0, 0), (1, 1))
-        self.assertTrue(question_A.check_line_overlap(l1, l2))
-        self.assertTrue(question_A.check_line_overlap(l2, l1))
+    def test_non_overlapping_lines_1(self):
+        line_1 = (1, 5)
+        line_2 = (6, 8)
+        return self.assertFalse(question_A.check_line_overlap(line_1, line_2))
 
-    def test_perpendicular_lines_1(self):
-        l1 = ((0, 0), (0, 1))
-        l2 = ((0, 0), (1, 0))
-        self.assertTrue(question_A.check_line_overlap(l1, l2))
-        self.assertTrue(question_A.check_line_overlap(l2, l1))
+    def test_non_overlapping_lines_2(self):
+        line_1 = (0, 10)
+        line_2 = (11, 20)
+        return self.assertFalse(question_A.check_line_overlap(line_1, line_2))
+
+    def test_non_overlapping_lines_3(self):
+        line_1 = (-15, -10)
+        line_2 = (-9, 10)
+        return self.assertFalse(question_A.check_line_overlap(line_1, line_2))
+
+    def test_non_overlapping_lines_4(self):
+        line_1 = (-15, -10)
+        line_2 = (5, 10)
+        return self.assertFalse(question_A.check_line_overlap(line_1, line_2))
 

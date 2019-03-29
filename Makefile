@@ -9,5 +9,5 @@ test:
 	python3 -m unittest tests/question_B/tests.py
 start_server_question_C:
 	export FLASK_ENV=development
-	export FLASK_APP=chalenge/question_C/server.py
+	export FLASK_APP=question_C/flask_server.py
 	flask run

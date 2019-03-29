@@ -25,35 +25,26 @@ def compare_string_version_list(v1_list, v2_list):
 
 
 def compare_string_version_string(s1, s2):
-    if None in (s1, s2):
-        if s1 is None and s2 is None:
-            result = 0
-        if s2 is None:
-            result = 1
-        elif s1 is None:
-            result = -1
-    else:
-        if s1 == s2:
-            result = 0
-        elif s1 > s2:
-            result = 1
-        elif s1 < s2:
-            result = -1
-    return result
+    if s1 == s2:  # equal strings
+        return 0
+    elif s1 is None:  # s1 is none while s2 is not
+        return -1
+    elif s2 is None:  # s2 is none while s1 is not
+        return 1
+    # there is no None value
+    elif s1 < s2:  # s2 is greather than s1
+        return -1
+    else:  # s1 is greather than s2
+        return 1
 
 
 if __name__ == '__main__':
-    # compare_string_version("1.0.2.1.2.3.4.5.6.7.8.9", "1.0.2.1.2.3.4.5.6.7.8.8")
-
     pr = cProfile.Profile()
     pr.enable()
 
-    for i in range(100000):
+    for i in range(1000000):
         compare_string_version("1.0.2.1.2.3.4.5.6.7.8.9",
                                "1.0.2.1.2.3.4.5.6.7.8.8")
-    # print(timeit.timeit('compare_string_version("1.0.2.1.2.3.4.5.6.7.8.9", "1.0.2.1.2.3.4.5.6.7.8.8")',
-    # number=1_000_000, globals=globals()))
-
     pr.disable()
     s = io.StringIO()
     sortby = 'cumulative'

@@ -1,5 +1,5 @@
 import unittest
-from chalenge import question_A
+from question_A import question_A
 
 
 class TestLines(unittest.TestCase):
@@ -47,4 +47,3 @@ class TestLines(unittest.TestCase):
         line_1 = (-15, -10)
         line_2 = (5, 10)
         return self.assertFalse(question_A.check_line_overlap(line_1, line_2))
-

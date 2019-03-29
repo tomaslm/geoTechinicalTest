@@ -1,6 +1,8 @@
 import itertools
 # from profile_decorator import profile_decorator
-import cProfile, pstats, io
+import cProfile
+import pstats
+import io
 
 
 def compare_string_version(v1, v2, version_separator="."):
@@ -40,19 +42,18 @@ def compare_string_version_string(s1, s2):
     return result
 
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     # compare_string_version("1.0.2.1.2.3.4.5.6.7.8.9", "1.0.2.1.2.3.4.5.6.7.8.8")
-    
+
     pr = cProfile.Profile()
     pr.enable()
 
-
     for i in range(100000):
-        compare_string_version("1.0.2.1.2.3.4.5.6.7.8.9", "1.0.2.1.2.3.4.5.6.7.8.8")
+        compare_string_version("1.0.2.1.2.3.4.5.6.7.8.9",
+                               "1.0.2.1.2.3.4.5.6.7.8.8")
     # print(timeit.timeit('compare_string_version("1.0.2.1.2.3.4.5.6.7.8.9", "1.0.2.1.2.3.4.5.6.7.8.8")',
-                        # number=1_000_000, globals=globals()))
+    # number=1_000_000, globals=globals()))
 
-                        
     pr.disable()
     s = io.StringIO()
     sortby = 'cumulative'

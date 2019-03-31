@@ -17,10 +17,20 @@ Write a new Geo Distributed LRU (Least Recently Used) cache with time expiration
 
 7 - Cache can expire
 
+Installing
+==========
 
+To create virtualenvironment run:
+make create_venv
 
-### Implementation
+To install dependencies run:
+make install
 
+To start server run:
+make start_server_question_C
+
+Implementation
+==================
 The cache implementation that I've tried to do has the following behaviour:
 
 The cache mechanism is the same in all nodes. 
@@ -48,4 +58,5 @@ Whenever a resource coud't be found at cache, the original request should be don
 Future improvements 
 ===================
 Impelemnt some kind of service discovery or other tool that allows all nodes to notify a single service, that broadcasts the message to all the others.
-Implement periodically service that removes expired resources from memmory
+Implement periodically service that removes expired resources from 
+Creation of unit tests

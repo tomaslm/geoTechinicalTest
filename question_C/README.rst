@@ -21,13 +21,19 @@ Installing
 ==========
 
 To create virtualenvironment run:
-make create_venv
+
+
+   make create_venv
 
 To install dependencies run:
-make install
+
+
+   make install
 
 To start server run:
-make start_server_question_C
+
+
+   make start_server_question_C
 
 Implementation
 ==================

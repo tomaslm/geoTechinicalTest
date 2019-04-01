@@ -33,6 +33,7 @@ class CacheLRU:
                 self._free_space()
         else:
             self.remove_usage_list(resource_id)
+            self.sorted_expiration_time_list.remove(self.memmory[resource_id])
         resource = Resource(
             resource_id, resource_value, mimetype, expiration_datetime
         )
@@ -50,7 +51,7 @@ class CacheLRU:
             resource = self.memmory[resource_id]
             return resource.value, resource.mimetype
         else:
-            return None
+            return None, None
 
     def update_usage_list(self, used_resource_id, notify_nodes):
         self.remove_usage_list(used_resource_id)
@@ -64,11 +65,11 @@ class CacheLRU:
                 self.usage_list.remove(self.usage_list.nodeat(index))
             break
 
-    def delete_resource_from_cache(self, resource_id):
-        if self.contains_cached_resource(resource_id):
-            self.remove_usage_list(resource_id)
-            self.sorted_expiration_time_list.remove(self.memmory[resource_id])
-            del self.memmory[resource_id]
+    def delete_resource_from_cache(self, resource):
+        if self.contains_cached_resource(resource.identifier):
+            self.remove_usage_list(resource.identifier)
+            self.sorted_expiration_time_list.remove(resource)
+            del self.memmory[resource.identifier]
 
     def contains_cached_resource(self, resource_id):
         return resource_id in self.memmory
@@ -78,13 +79,13 @@ class CacheLRU:
 
     def _free_space(self, itens=1):
         resource_id = self.usage_list.first.value
-        self.delete_resource(resource_id)
+        self.delete_resource_from_cache(self.memmory[resource_id])
 
-    def _delete_resources_by_expiration_time(self, curr_date=datetime
-                                             .datetime.now()):
+    def _delete_resources_by_expiration_time(self):
+        curr_date = datetime.datetime.now()
         for resource in self.sorted_expiration_time_list:
             if resource.expiration_datetime <= curr_date:
-                self.delete_resource_from_cache(resource.identifier)
+                self.delete_resource_from_cache(resource)
             else:
                 break
 

@@ -12,8 +12,8 @@ api = Api(app, version='1.0', title='LRU cache with time expiration',
 
 
 nodes_url = ["http://localhost:5000"]
-expiration_seconds = 30
-max_cache_size = 5
+expiration_seconds = 3
+max_cache_size = 100
 
 nodes_endpoints = {
     "insert": "/add_resource_to_cache",
@@ -30,11 +30,15 @@ class AddResourceToCache(Resource):
     @api.expect(api.model('Any object', ""))
     def post(self, resource_id):
         try:
-            notify_nodes = request.args.get("notify_nodes", True)
-            expiration_datetime = request.args.get(
-                "expiration_datetime",
-                self.calculate_expiration_seconds()
-            )
+            notify_nodes = request.args.get(
+                "notify_nodes", default=True) is True
+            expiration_datetime_str = request.args.get(
+                "expiration_datetime")
+            expiration_datetime = datetime.datetime.fromisoformat(
+                expiration_datetime_str) \
+                if expiration_datetime_str is not None \
+                else self.calculate_expiration_seconds()
+
             cache.add_resource_to_cache(resource_id,
                                         request.get_data(),
                                         request.content_type,

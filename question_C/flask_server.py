@@ -1,4 +1,4 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, Response
 from flask_restplus import Api, Resource, fields
 from .CacheLRU import CacheLRU
 import datetime
@@ -25,7 +25,9 @@ cache = CacheLRU(max_cache_size, nodes_url, nodes_endpoints)
 
 
 @api.route(f"{nodes_endpoints['insert']}/<resource_id>", methods=['POST'])
+@api.doc(params={'resource_id': 'Resource identifier'})
 class AddResourceToCache(Resource):
+    @api.expect(api.model('Any object', ""))
     def post(self, resource_id):
         try:
             notify_nodes = request.args.get("notify_nodes", True)
@@ -33,9 +35,11 @@ class AddResourceToCache(Resource):
                 "expiration_datetime",
                 self.calculate_expiration_seconds()
             )
-
-            cache.add_resource_to_cache(resource_id, request.get_data(
-            ), notify_nodes, expiration_datetime)
+            cache.add_resource_to_cache(resource_id,
+                                        request.get_data(),
+                                        request.content_type,
+                                        notify_nodes,
+                                        expiration_datetime)
             return '', 201
         except Exception as e:
             return f'Unknown error: {e}', 500
@@ -46,17 +50,19 @@ class AddResourceToCache(Resource):
 
 
 @api.route(f"{nodes_endpoints['find']}/<resource_id>", methods=['GET'])
+@api.doc(params={'resource_id': 'Resource identifier'})
 class FindResourceInCache(Resource):
-    def get(resource_id):
-        resource = cache.find_resource(resource_id)
+    def get(self, resource_id):
+        resource, mimetype = cache.find_resource(resource_id)
         if(resource is None):
             return '', 404
         else:
-            return resource, 200
+            return Response(resource, mimetype=mimetype)
 
 
 @api.route(f"{nodes_endpoints['used']}/<resource_id>", methods=['POST'])
+@api.doc(params={'resource_id': 'Resource identifier'})
 class ResourceUsedInCache(Resource):
-    def post(resource_id):
+    def post(self, resource_id):
         cache.resource_used_in_cache(resource_id, False)
         return '', 202

@@ -60,3 +60,5 @@ Future improvements
 Impelemnt some kind of service discovery or other tool that allows all nodes to notify a single service, that broadcasts the message to all the others.
 Implement periodically service that removes expired resources from 
 Creation of unit tests
+Creation of way that a new node gets all cached resource from others
+Add logging system to application

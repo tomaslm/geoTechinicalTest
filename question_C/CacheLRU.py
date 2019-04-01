@@ -24,6 +24,7 @@ class CacheLRU:
         self,
         resource_id,
         resource_value,
+        mimetype,
         notify_nodes,
         expiration_datetime,
     ):
@@ -31,9 +32,9 @@ class CacheLRU:
             while(self._is_memmory_full()):
                 self._free_space()
         else:
-            self.usage_list.remove(resource_id)
+            self.remove_usage_list(resource_id)
         resource = Resource(
-            resource_id, resource_value, expiration_datetime
+            resource_id, resource_value, mimetype, expiration_datetime
         )
         self.memmory[resource_id] = resource
         self.sorted_expiration_time_list.add(resource)
@@ -46,20 +47,26 @@ class CacheLRU:
         self._delete_resources_by_expiration_time()
         if(self.contains_cached_resource(resource_id)):
             self.update_usage_list(resource_id, True)
-            resource_value = self.memmory[resource_id]
-            return resource_value
+            resource = self.memmory[resource_id]
+            return resource.value, resource.mimetype
         else:
             return None
 
     def update_usage_list(self, used_resource_id, notify_nodes):
-        self.usage_list.remove(used_resource_id)
+        self.remove_usage_list(used_resource_id)
         self.usage_list.appendleft(used_resource_id)
         if notify_nodes:
             self._notify_nodes_used(used_resource_id)
 
+    def remove_usage_list(self, resource_id):
+        for index in range(len(self.usage_list)):
+            if resource_id == self.usage_list[index]:
+                self.usage_list.remove(self.usage_list.nodeat(index))
+            break
+
     def delete_resource_from_cache(self, resource_id):
         if self.contains_cached_resource(resource_id):
-            self.usage_list.remove(resource_id)
+            self.remove_usage_list(resource_id)
             self.sorted_expiration_time_list.remove(self.memmory[resource_id])
             del self.memmory[resource_id]
 
@@ -92,15 +99,16 @@ class CacheLRU:
             requests.post(f"{url}/{resource_id}",
                           data=resource_value, params=payload)
 
-    def _notify_nodes_used(self, resource_id, datetime_read):
+    def _notify_nodes_used(self, resource_id):
         for node_url in self.nodes_url:
             url = node_url + self.nodes_endpoints["used"]
-            payload = {'notify_nodes': False, 'datetime': datetime_read}
+            payload = {'notify_nodes': False}
             requests.get(f"{url}/{resource_id}", params=payload)
 
 
 class Resource:
-    def __init__(self, identifier, value, expiration_datetime):
+    def __init__(self, identifier, value, mimetype,  expiration_datetime):
         self.identifier = identifier
         self.value = value
+        self.mimetype = mimetype
         self.expiration_datetime = expiration_datetime
